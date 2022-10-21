@@ -2,61 +2,76 @@
 #include <vector>
 using namespace std;
 
+void merge(vector<int> &array, int const left, int const middle, int const right)
+{
+    int const start = middle - left + 1;
+    int const end = right - middle;
+    vector<int> leftArray (start);
+    vector<int> rightArray (end);
 
-void merge(vector<int> &arr, int low, int high, int mid){
-    int i = low, j = mid + 1, k = low;
-    int massive [low + high];
-    while (i <= mid and j <= high){
-        if (arr[i] < arr[j]){
-            massive[k] = arr[i];
-            k ++;
-            i ++;
+    for (int i = 0; i < start; i ++)
+        leftArray[i] = array[left + i];
+
+    for (int j = 0; j < end; j ++)
+        rightArray[j] = array[middle + 1 + j];
+
+    int startIndex = 0; int endIndex = 0; int indexMerge = left;
+
+    while (startIndex < start and endIndex < end)
+    {
+        if (leftArray[startIndex] <= rightArray[endIndex])
+        {
+            array[indexMerge] = leftArray[startIndex];
+            startIndex ++;
         }
-        else{
-            massive[k] = arr[j];
-            k ++;
-            j ++;
+        else
+        {
+            array[indexMerge] = rightArray[endIndex];
+            endIndex ++;
         }
+        indexMerge ++;
     }
-    while (i <= mid){
-        massive[k] = arr[i];
-        k ++;
-        i ++;
+
+    while (startIndex < start)
+    {
+        array[indexMerge] = leftArray[startIndex];
+        startIndex++;
+        indexMerge++;
     }
-    while (j <= high){
-        massive[k] = arr[j];
-        k ++;
-        j ++;
+
+    while (endIndex < end)
+    {
+        array[indexMerge] = rightArray[endIndex];
+        endIndex ++;
+        indexMerge ++;
     }
-    for (int i = low; i < k; i ++){
-        arr[i] = massive[i];
+
+
+}
+
+void merge_sort(vector <int> &array, int start, int end){
+    if (start >= end)
+    {
+        return;
     }
+    auto middle = start + (end - start) / 2;
+    merge_sort(array, start, middle);
+    merge_sort(array, middle + 1, end);
+    merge(array,start, middle, end);
 }
 
 
-void merge_sort(vector<int> &arr, int low, int high){
-    int mid;
-    if (low < high){
-        mid = (low + high) / 2;
-        merge_sort(arr, low, mid);
-        merge_sort(arr, mid + 1, high);
-        merge(arr, low, high, mid);
-    }
 
-}
 
 int main(){
     int N;
     cin >> N;
-    vector<int> arr(N);
+    vector<int> list(N);
     for (int i = 0; i < N; i ++){
-        cin >> arr[i];
+        cin >> list[i];
     }
-    merge_sort(arr, 0, N - 1);
-
-
-
+    merge_sort(list, 0, N - 1);
     for (int i = 0; i < N; i ++){
-        cout << arr[i] << " ";
+        cout << list[i] << " ";
     }
 }
